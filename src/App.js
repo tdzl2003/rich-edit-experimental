@@ -5,12 +5,14 @@ import React, { Component } from 'react';
 import { RichEditor, EditorState } from 'react-rich-edit';
 
 export default class App extends Component {
-   state = EditorState.createEmpty();
+   state = {
+     editorState: EditorState.createEmpty(),
+   };
 
-  onChangeState = state => {
-    this.setState(() => state);
+  onChangeState = editorState => {
+    this.setState({editorState});
   };
    render() {
-     return <RichEditor editorState={this.state} onChange={this.onChangeState}/>;
+     return <RichEditor editorState={this.state.editorState} onChange={this.onChangeState}/>;
    }
 }

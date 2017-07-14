@@ -12,6 +12,19 @@ const ContentStateRecord = Record({
 });
 
 export default class ContentState extends ContentStateRecord {
+
+  // Getters
+  getBlockMap() {
+    return this.get('blockMap');
+  }
+
+  getSelectionList() {
+    return this.get('selectionList');
+  }
+
+
+  // Factories
+
   static createEmpty() {
     return new ContentState();
   }

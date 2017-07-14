@@ -3535,6 +3535,10 @@ react-dom@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
+react-subscribe@^1.2.3:
+  version "1.2.3"
+  resolved "http://registry.npm.taobao.org/react-subscribe/download/react-subscribe-1.2.3.tgz#4216d399c458a8a7df4a1d7157774efc57bef0db"
+
 react@^15.6.1:
   version "15.6.1"
   resolved "https://registry.npmjs.org/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"

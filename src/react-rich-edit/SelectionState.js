@@ -12,6 +12,24 @@ const SelectionStateRecord = Record({
 });
 
 export default class SelectionState extends SelectionStateRecord {
+  // Getter
+  getAnchorKey() {
+    return this.get('anchorKey');
+  }
+
+  getAnchorOffset() {
+    return this.get('anchorOffset');
+  }
+
+  getFocusKey() {
+    return this.get('focusKey');
+  }
+
+  getFocusOffset() {
+    return this.get('focusOffset');
+  }
+
+  // Factories
   static createFromPosition(key, offset) {
     return new SelectionState({
       anchorKey: key,

@@ -1,5 +1,24 @@
 .richEditor {
+  position: relative;
   border: solid 1px #999999;
   margin: 4px;
   cursor: text;
+}
+
+.cursorLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.cursor {
+  position: absolute;
+  background: #999999;
+  width: 3px;
+  &.invisible {
+    visibility: hidden;
+  }
 }
