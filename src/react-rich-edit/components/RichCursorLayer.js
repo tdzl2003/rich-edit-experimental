@@ -84,6 +84,16 @@ export default class RichCursorLayer extends PureComponent {
     }
     const keyName = parts.join('-');
     const { keyMap, dispatch } = this.props;
+
+    if (typeof(keyMap) === 'function') {
+      const action = keyMap(keyName, ev);
+      if (action) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        dispatch(action);
+      }
+      return;
+    }
     if (keyMap.has(keyName)) {
       const action = keyMap.get(keyName);
       ev.preventDefault();

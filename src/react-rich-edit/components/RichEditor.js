@@ -54,6 +54,9 @@ export default class RichEditor extends PureComponent {
   };
   dispatch = (action, ...payload) => {
     const { editorState, actionMap, onChange } = this.props;
+    if (typeof(actionMap) === 'function') {
+      return onChange(actionMap(action, ...payload));
+    }
     if (!actionMap.has(action)) {
       console.warn(`Action ${action} was not implemented yet.`);
       return;
