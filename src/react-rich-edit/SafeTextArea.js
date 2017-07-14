@@ -32,6 +32,12 @@ export default class SafeTextArea extends PureComponent {
       this.setState({ inputValue: e.target.value })
     }
   };
+  handleKeyDown = (e) => {
+    if (!isOnComposition) {
+      const { onKeyDown } = this.props;
+      onKeyDown(e);
+    }
+  }
   handleComposition = (e) => {
     // console.log('type ', e.type, ', target ', e.target, ',target.value ', e.target.value, ', data', e.data)
 
@@ -60,6 +66,7 @@ export default class SafeTextArea extends PureComponent {
       <textarea
         {...others}
         ref={onTextAreaRef}
+        onKeyDown={this.handleKeyDown}
         onChange={this.handleChange}
         onCompositionUpdate={this.handleComposition}
         onCompositionEnd={this.handleComposition}

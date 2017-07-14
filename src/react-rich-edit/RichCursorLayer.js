@@ -27,6 +27,7 @@ export default class RichCursorLayer extends PureComponent {
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         onTextInput={this.onTextInput}
+        onKeyDown={this.onKeyDown}
       />
     );
   }
@@ -65,6 +66,9 @@ export default class RichCursorLayer extends PureComponent {
   onTextInput = text => {
     // This means user entered something.
     console.log(text);
+  };
+  onKeyDown = ev => {
+    console.log(ev.nativeEvent);
   };
 
   render() {
