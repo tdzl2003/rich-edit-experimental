@@ -6,7 +6,7 @@ import React, { PureComponent } from "react";
 import styles from './RichEditor.scss';
 import {Timer} from "react-subscribe";
 import RichCursor from "./RichCursor";
-import SafeTextArea from "./SafeTextArea";
+import SafeTextArea from "../models/SafeTextArea";
 
 export default class RichCursorLayer extends PureComponent {
   state = {
