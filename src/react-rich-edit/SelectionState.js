@@ -38,4 +38,9 @@ export default class SelectionState extends SelectionStateRecord {
       focusOffset: offset,
     });
   }
+
+  static createStartPointOfBlocks(blockMap) {
+    const [key, value] = blockMap._list.first();
+    return SelectionState.createFromPosition(key, key);
+  }
 }

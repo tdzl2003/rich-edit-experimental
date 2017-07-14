@@ -3,11 +3,14 @@
  */
 
 import React, { PureComponent } from 'react';
+import RichBlock from "./RichBlock";
 
 export default class RichContent extends PureComponent {
+  blockRefs = {};
+
   renderBlock = ([key, value])=> {
     return (
-      <p key={`ln-${key}`}>{value}<br /></p>
+      <RichBlock key={`ln-${key}`} content={value} blockRefs={this.blockRefs} blockKey={key} />
     );
   };
   componentDidMount() {
@@ -19,7 +22,28 @@ export default class RichContent extends PureComponent {
     postUpdate && postUpdate();
   }
   queryPosition(key, offset) {
-    return [0, 0, 20];
+    const { blockMap } = this.props;
+
+    const block = this.blockRefs[key];
+    const blockData = blockMap.get(key);
+    if (!block || !blockData) {
+      return [-100, 0, 0];
+    }
+    if (offset === key) {
+      // at line start.
+      const first = blockData._list.first();
+
+      if (first) {
+        // There is a first element, use its size.
+        const el = block.entityRefs[first[0]];
+        return [el.entityRef.offsetLeft, el.entityRef.offsetTop, el.entityRef.offsetHeight];
+      } else {
+        // Empty line.
+        return [blockRef]
+      }
+    } else {
+      // after some element.
+    }
   }
   render() {
     const { blockMap } = this.props;

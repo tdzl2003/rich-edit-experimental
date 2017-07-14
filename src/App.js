@@ -6,7 +6,7 @@ import { RichEditor, EditorState } from 'react-rich-edit';
 
 export default class App extends Component {
    state = {
-     editorState: EditorState.createEmpty(),
+     editorState: EditorState.createWithText('Hello, Rich Editor.'),
    };
 
   onChangeState = editorState => {

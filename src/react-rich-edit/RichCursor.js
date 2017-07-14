@@ -9,7 +9,7 @@ import styles from './RichEditor.scss';
 
 const Position = Record({
   left: 0,
-  bottom: 0,
+  top: 0,
   height: 0,
 });
 
@@ -19,18 +19,18 @@ export default class RichCursor extends Component {
     super(props);
     const { queryPosition } = this.props;
     const { selection } = this.props;
-    const [left, bottom, height] = queryPosition(selection.getFocusKey(), selection.getFocusOffset());
+    const [left, top, height] = queryPosition(selection.getFocusKey(), selection.getFocusOffset());
     this.state = {
-      position: new Position({left, bottom, height}),
+      position: new Position({left, top, height}),
     };
   }
 
   componentWillReceiveProps({ queryPosition }) {
     if (queryPosition !== this.props.queryPosition) {
       const { selection } = this.props;
-      const [left, bottom, height] = queryPosition(selection.getFocusKey(), selection.getFocusOffset());
+      const [left, top, height] = queryPosition(selection.getFocusKey(), selection.getFocusOffset());
       this.setState({
-        position: this.state.position.merge({ left, bottom, height }),
+        position: this.state.position.merge({ left, top, height }),
       });
     }
   }
