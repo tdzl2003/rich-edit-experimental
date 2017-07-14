@@ -19,6 +19,7 @@ export default class RichCursorLayer extends PureComponent {
     });
   };
   renderAgenttTextArea(){
+    // TODO: Display composition state if possible.
     return (
       <SafeTextArea
         onTextAreaRef={this.onTextAreaRef}
