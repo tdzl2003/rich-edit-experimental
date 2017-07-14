@@ -12,9 +12,27 @@ const EditorStateRecord = Record({
 });
 
 export default class EditorState extends EditorStateRecord {
-  // Getters & Setters
+  // Getters
   getCurrentContent() {
     return this.get('currentContent');
+  }
+
+  getUndoStack() {
+    return this.get('undoStack');
+  }
+
+  getRedoStack() {
+    return this.get('redoStack');
+  }
+
+  // Actions
+  modifyContent(reducer) {
+    const oldContent = this.getCurrentContent();
+    const currentContent = reducer(oldContent);
+    return this.merge({
+      currentContent,
+      undoStack: this.getUndoStack().shift(oldContent),
+    });
   }
 
   // Factories

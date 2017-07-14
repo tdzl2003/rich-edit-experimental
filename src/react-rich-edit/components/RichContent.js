@@ -35,14 +35,16 @@ export default class RichContent extends PureComponent {
 
       if (first) {
         // There is a first element, use its size.
-        const el = block.entityRefs[first[0]];
-        return [el.entityRef.offsetLeft, el.entityRef.offsetTop, el.entityRef.offsetHeight];
+        const el = block.entityRefs[first[0]].entityRef;
+        return [el.offsetLeft, el.offsetTop, el.offsetHeight];
       } else {
         // Empty line.
         return [blockRef]
       }
     } else {
       // after some element.
+      const el = block.entityRefs[offset].entityRef;
+      return [el.offsetLeft + el.offsetWidth, el.offsetTop, el.offsetHeight];
     }
   }
   render() {

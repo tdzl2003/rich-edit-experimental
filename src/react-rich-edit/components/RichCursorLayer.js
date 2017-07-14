@@ -65,10 +65,31 @@ export default class RichCursorLayer extends PureComponent {
   };
   onTextInput = text => {
     // This means user entered something.
-    console.log(text);
+    const { dispatch } = this.props;
+    dispatch('add-text', text);
   };
   onKeyDown = ev => {
-    console.log(ev.nativeEvent);
+    const parts = [];
+    if (ev.ctrlKey) {
+      parts.push('Ctrl');
+    }
+    if (ev.altKey) {
+      parts.push('Alt');
+    }
+    if (ev.shiftKey) {
+      parts.push('Shift');
+    }
+    if (ev.key !== 'Control' && ev.key !== 'Alt' && ev.key !== 'Shift') {
+      parts.push(ev.key);
+    }
+    const keyName = parts.join('-');
+    const { keyMap, dispatch } = this.props;
+    if (keyMap.has(keyName)) {
+      const action = keyMap.get(keyName);
+      ev.preventDefault();
+      ev.stopPropagation();
+      dispatch(action);
+    }
   };
 
   render() {
