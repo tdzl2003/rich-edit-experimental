@@ -36,10 +36,12 @@ export default class RichCursor extends Component {
   }
 
   render() {
-    const { visible } = this.props;
+    const { visible, focus, children } = this.props;
     const { position } = this.state;
     return (
-      <div style={position.toJSON()} className={classnames(styles.cursor, !visible && styles.invisible)}/>
+      <div style={position.toJSON()} className={classnames(styles.cursor, focus && styles.focus, !visible && styles.invisible)}>
+        {children}
+      </div>
     );
   }
 }

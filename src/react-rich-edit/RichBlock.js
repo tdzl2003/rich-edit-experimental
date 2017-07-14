@@ -28,10 +28,10 @@ export default class RichBlock extends PureComponent {
   };
 
   render() {
-    const { content } = this.props;
+    const { content, blockKey } = this.props;
 
     return (
-      <p ref={this.onBlockRef}>
+      <p ref={this.onBlockRef} data-block-key={blockKey}>
         {content.entrySeq().map(this.renderEntity)}
         <br />
       </p>

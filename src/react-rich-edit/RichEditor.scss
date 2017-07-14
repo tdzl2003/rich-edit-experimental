@@ -18,9 +18,19 @@
 
 .cursor {
   position: absolute;
-  background: #999999;
+  background: #cccccc;
   width: 3px;
-  &.invisible {
-    visibility: hidden;
+  overflow: hidden;
+  &.focus {
+    background: #333333;
   }
+  &.invisible {
+    background: transparent;
+  }
+}
+
+.agentTextArea {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }

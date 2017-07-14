@@ -19,10 +19,11 @@ export default class RichEntity extends PureComponent {
   };
 
   render() {
-    const { content } = this.props;
+    const { content, entityKey } = this.props;
 
     return React.cloneElement(content.renderJSX(), {
       ref: this.onEntityRef,
+      'data-entity-key': entityKey,
     });
   }
 }

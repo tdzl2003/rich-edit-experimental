@@ -26,15 +26,45 @@ export default class RichEditor extends PureComponent {
   onContentRef = ref => {
     this.contentLayer = ref;
   };
+  onCursorLayerRef = ref => {
+    this.cursorLayer = ref;
+  };
+  onMouseDown = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    this.cursorLayer.focus();
+  };
+  onMouseUp = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+  };
+  onMouseMove = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+  };
+  onClick = ev => {
+    ev.stopPropagation();
+    ev.preventDefault();
+  };
   render() {
     const { editorState, style, className } = this.props;
 
     const content = editorState.getCurrentContent();
 
     return (
-      <div style={style} className={classnames(className, styles.richEditor)}>
-        <RichContent ref={this.onContentRef} blockMap={content.getBlockMap()} postUpdate={this.postUpdate} />
+      <div
+        style={style}
+        className={classnames(className, styles.richEditor)}
+        onMouseUp={this.onMouseUp}
+        onMouseMove={this.onMouseMove}
+        onMouseDown={this.onMouseDown}
+        onClick={this.onClick}
+      >
+        <RichContent
+          ref={this.onContentRef} blockMap={content.getBlockMap()} postUpdate={this.postUpdate}
+        />
         <RichCursorLayer
+          ref={this.onCursorLayerRef}
           queryPosition={this.state.queryPosition}
           selections={content.getSelectionList()}
         />
