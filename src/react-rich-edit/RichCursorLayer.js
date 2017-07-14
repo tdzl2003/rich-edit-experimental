@@ -6,20 +6,7 @@ import React, { PureComponent } from "react";
 import styles from './RichEditor.scss';
 import {Timer} from "react-subscribe";
 import RichCursor from "./RichCursor";
-
-
-function  AgentTextArea({onTextAreaRef, onFocus, onBlur, onChange}){
-  return (
-    <textarea
-      ref={onTextAreaRef}
-      className={styles.agentTextArea}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      onChange={onChange}
-      value=""
-    />
-  );
-}
+import SafeTextArea from "./SafeTextArea";
 
 export default class RichCursorLayer extends PureComponent {
   state = {
@@ -31,6 +18,17 @@ export default class RichCursorLayer extends PureComponent {
       visible: !this.state.visible,
     });
   };
+  renderAgenttTextArea(){
+    return (
+      <SafeTextArea
+        onTextAreaRef={this.onTextAreaRef}
+        className={styles.agentTextArea}
+        onFocus={this.onFocus}
+        onBlur={this.onBlur}
+        onTextInput={this.onTextInput}
+      />
+    );
+  }
   renderCursor = (data, i) => {
     const { queryPosition } = this.props;
     const { visible, focus } = this.state;
@@ -43,7 +41,7 @@ export default class RichCursorLayer extends PureComponent {
         focus={focus}
         onTextAreaRef={this.onTextAreaRef}
       >
-        {i === 0 && AgentTextArea(this)}
+        {i === 0 && this.renderAgenttTextArea()}
       </RichCursor>
     )
   };
@@ -63,10 +61,11 @@ export default class RichCursorLayer extends PureComponent {
       focus: false,
     });
   };
-  onChange = ev => {
+  onTextInput = text => {
     // This means user entered something.
-    console.log(ev.target.value);
+    console.log(text);
   };
+
   render() {
     const { selections } = this.props;
 
