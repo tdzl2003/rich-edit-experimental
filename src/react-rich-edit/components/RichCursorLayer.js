@@ -12,12 +12,20 @@ export default class RichCursorLayer extends Component {
   state = {
     visible: false,
     focus: false,
+    timerKey: `${Date.now()}`,
   };
   onTimer = () => {
     this.setState({
       visible: !this.state.visible,
     });
   };
+  componentWillReceiveProps() {
+    // Don't blink when update.
+    this.setState({
+      visible: true,
+      timerKey: `${Date.now()}`,
+    })
+  }
   renderAgenttTextArea(){
     // TODO: Display composition state if possible.
     return (
@@ -104,10 +112,11 @@ export default class RichCursorLayer extends Component {
 
   render() {
     const { selections } = this.props;
+    const { timerKey } = this.state;
 
     return (
       <div className={styles.cursorLayer}>
-        <Timer interval={600} onTimer={this.onTimer} />
+        <Timer key={timerKey} interval={600} onTimer={this.onTimer} />
         {selections.map(this.renderCursor)}
       </div>
     )
