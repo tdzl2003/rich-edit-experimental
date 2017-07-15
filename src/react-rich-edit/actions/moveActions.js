@@ -65,31 +65,47 @@ function moveLeftCursor(selection, blockMap) {
   return SelectionState.createFromPosition(key, key);
 }
 
+// return null means not found..
+function find_first_in_range(start, end, condition) {
+  let haveFit = false;
+  for (;end - start > 1;) {
+    const m = ((end + start) / 2 ) | 0;
+    if (condition(m - 1)) {
+      haveFit = true;
+      end = m;
+    } else {
+      start = m;
+    }
+  }
+
+  if (end > start && (haveFit || condition(start))) {
+    return start;
+  }
+  return null;
+}
+
+function find_lowerest(start, end, value) {
+  return find_first_in_range(start, end, i => i === end - 1 || value(i + 1) > value(i));
+}
+
 function moveDownCursor(selection, blockMap, queryPosition) {
   let key = selection.getFocusKey();
   let offset = selection.getFocusOffset();
   let line = blockMap.get(key);
 
-  const [left, top] = queryPosition(key, offset);
+  const [left, top, height] = queryPosition(key, offset);
   let currIndex = offset === key ? -1 : line._map.get(offset);
 
   // find first entity in next line.
-  let currLeft = left, currTop = top;
-
   let currLineCount = line.count();
-  for (currIndex++;currIndex < currLineCount; currIndex++) {
-    const myOffset = line._list.get(currIndex)[0]
-    const [myLeft, myTop] = queryPosition(key, myOffset);
-    let isNewLine = (myLeft < currLeft || (myLeft === currLeft && myTop > currTop));
-    currLeft = myLeft;
-    currTop = myTop;
-    if (isNewLine) {
-      offset = myOffset;
-      break;
-    }
-  }
-  if (currIndex >= currLineCount) {
-    // will goto next line.
+
+  currIndex = find_first_in_range(currIndex + 1, currLineCount, index => {
+    const [myLeft, myTop, myHeight] = queryPosition(key, line._list.get(index)[0]);
+    return myHeight ? (myTop >= top + height) : (myTop > top + height);
+  });
+
+  if (currIndex === null) {
+    // will goto next block.
     let lineIndex = blockMap._map.get(key);
     let nextLine = blockMap._list.get(lineIndex + 1);
     if (!nextLine) {
@@ -97,26 +113,22 @@ function moveDownCursor(selection, blockMap, queryPosition) {
       return selection;
     }
     [key, line] = nextLine;
-    [currLeft, currTop] = queryPosition(key, key);
     currLineCount = line.count();
     currIndex = -1;
-    offset = key;
   }
 
-  for (currIndex++;currIndex < currLineCount; currIndex++) {
-    const myOffset = line._list.get(currIndex)[0];
-    const [myLeft, myTop] = queryPosition(key, myOffset);
-    let isNewLine = (myLeft < currLeft || (myLeft === currLeft && myTop > currTop));
-    if (isNewLine || Math.abs(myLeft - left) > Math.abs(currLeft - left)) {
-      // last one is better. return it.
-      return SelectionState.createFromPosition(key, offset);
+  const [currLeft, currTop, currHeight] = queryPosition(key, currIndex === -1 ? key : line._list.get(currIndex)[0]);
+
+  currIndex = find_lowerest(currIndex, currLineCount, index => {
+    const [myLeft, myTop, myHeight] = queryPosition(key, index === -1 ? key : line._list.get(index)[0]);
+
+    if (myHeight ? (myTop >= currTop + currHeight) : (myTop > currTop + currHeight)) {
+      return 10000000 + index;
     }
-    currLeft = myLeft;
-    currTop = myTop;
-    offset = myOffset;
-  }
+    return Math.abs(myLeft - left);
+  })
 
-  return SelectionState.createFromPosition(key, offset);
+  return SelectionState.createFromPosition(key, currIndex === -1 ? key : line._list.get(currIndex)[0]);
 }
 
 function moveUpCursor(selection, blockMap, queryPosition) {
@@ -124,55 +136,52 @@ function moveUpCursor(selection, blockMap, queryPosition) {
   let offset = selection.getFocusOffset();
   let line = blockMap.get(key);
 
-  const [left, top] = queryPosition(key, offset);
+  const [left, top, height] = queryPosition(key, offset);
   let currIndex = offset === key ? -1 : line._map.get(offset);
 
-  // find last entity in below line.
-  let currLeft = left, currTop = top;
-
   let currLineCount = line.count();
-  // last entity in below line cannot be start point of this line.
-  for (currIndex--;currIndex >= 0; currIndex--) {
-    const myOffset = line._list.get(currIndex)[0];
-    const [myLeft, myTop] = queryPosition(key, myOffset);
-    let isNewLine = (myLeft > currLeft || (myLeft === currLeft && myTop < currTop));
-    currLeft = myLeft;
-    currTop = myTop;
-    if (isNewLine) {
-      offset = myOffset;
-      break;
+
+  // find last entry in below line. This cannot be line start.
+  if (currIndex >= 0) {
+    const d = find_first_in_range(1, currIndex + 1, diff => {
+      const index = currIndex - diff;
+      const [myLeft, myTop, myHeight] = queryPosition(key, line._list.get(index)[0]);
+      return height ? (top >= myTop + myHeight) : (top > myTop + myHeight);
+    });
+    if (d === null) {
+      currIndex = null;
+    } else {
+      currIndex -= d;
     }
+  } else {
+    currIndex = null;
   }
-  if (currIndex < 0) {
-    // will goto last line.
+
+  if (currIndex === null) {
+    // will goto above block.
     let lineIndex = blockMap._map.get(key);
     if (lineIndex === 0) {
       // Current is the first line. return with no modifies.
       return selection;
     }
     [key, line] = blockMap._list.get(lineIndex - 1);
-    const lastEntry = line._list.get(-1);
-    offset = lastEntry ? lastEntry[0] : key;
-
-    [currLeft, currTop] = queryPosition(key, offset);
     currLineCount = line.count();
     currIndex = currLineCount - 1;
   }
 
-  for (currIndex--;currIndex >= -1; currIndex--) {
-    const myOffset = currIndex >= 0 ? line._list.get(currIndex)[0] : key;
-    const [myLeft, myTop] = queryPosition(key, myOffset);
-    let isNewLine = (myLeft > currLeft || (myLeft === currLeft && myTop < currTop));
-    if (isNewLine || Math.abs(myLeft - left) > Math.abs(currLeft - left)) {
-      // last one is better. return it.
-      return SelectionState.createFromPosition(key, offset);
-    }
-    currLeft = myLeft;
-    currTop = myTop;
-    offset = myOffset;
-  }
+  const [currLeft, currTop, currHeight] = queryPosition(key, currIndex === -1 ? key : line._list.get(currIndex)[0]);
 
-  return SelectionState.createFromPosition(key, offset);
+  currIndex -= find_lowerest(0, currIndex + 1, diff => {
+    const index = currIndex - diff;
+    const [myLeft, myTop, myHeight] = queryPosition(key, index === -1 ? key : line._list.get(index)[0]);
+
+    if (currHeight ? (currTop >= myTop + myHeight) : (currTop > myTop + myHeight)) {
+      return 10000000 + diff;
+    }
+    return Math.abs(myLeft - left);
+  });
+
+  return SelectionState.createFromPosition(key, currIndex === -1 ? key : line._list.get(currIndex)[0]);
 }
 
 export function mergeSelections(contentState) {
