@@ -63,12 +63,6 @@ function addTextAtSelection(blockMap, selection, keyCounter, text) {
   return [blockMap, selection, keyCounter];
 }
 
-function mergeSelections(blockMap, selectionList) {
-  //TODO: implement me.
-  return selectionList;
-}
-
-
 function insertText(editorState, text) {
   return editorState.modifyContent(content => {
     let blockMap = content.getBlockMap();

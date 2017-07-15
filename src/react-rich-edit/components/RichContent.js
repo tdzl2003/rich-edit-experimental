@@ -13,15 +13,7 @@ export default class RichContent extends PureComponent {
       <RichBlock key={`ln-${key}`} content={value} blockRefs={this.blockRefs} blockKey={key} />
     );
   };
-  componentDidMount() {
-    const { postUpdate } = this.props;
-    postUpdate && postUpdate();
-  }
-  componentDidUpdate() {
-    const { postUpdate } = this.props;
-    postUpdate && postUpdate();
-  }
-  queryPosition(key, offset) {
+  queryPosition = (key, offset) => {
     const { blockMap } = this.props;
 
     const block = this.blockRefs[key];
@@ -51,7 +43,7 @@ export default class RichContent extends PureComponent {
       }
     }
     return [0, 0, 0];
-  }
+  };
   render() {
     const { blockMap } = this.props;
     return (

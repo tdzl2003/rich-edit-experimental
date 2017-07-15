@@ -2,13 +2,13 @@
  * Created by tdzl2003 on 2017/7/14.
  */
 
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import styles from './RichEditor.scss';
 import {Timer} from "react-subscribe";
 import RichCursor from "./RichCursor";
 import SafeTextArea from "../models/SafeTextArea";
 
-export default class RichCursorLayer extends PureComponent {
+export default class RichCursorLayer extends Component {
   state = {
     visible: false,
     focus: false,

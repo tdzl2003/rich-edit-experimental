@@ -18,16 +18,13 @@ export default class RichEditor extends PureComponent {
   state = {
     queryPosition: (key, offset) => [0, 0, 0],
   };
-  postUpdate = () => {
+  componentDidMount() {
     if (this.contentLayer) {
       // make queryPosition changes each time content changes.
       this.setState({
-        queryPosition: this.contentLayer.queryPosition.bind(this.contentLayer),
+        queryPosition: this.contentLayer.queryPosition,
       });
     }
-  };
-  componentDidMount() {
-    this.postUpdate();
   }
   onContentRef = ref => {
     this.contentLayer = ref;
@@ -80,7 +77,7 @@ export default class RichEditor extends PureComponent {
         onClick={this.onClick}
       >
         <RichContent
-          ref={this.onContentRef} blockMap={content.getBlockMap()} postUpdate={this.postUpdate}
+          ref={this.onContentRef} blockMap={content.getBlockMap()}
         />
         <RichCursorLayer
           ref={this.onCursorLayerRef}
