@@ -25,6 +25,10 @@ export default class RichCursorLayer extends Component {
       visible: true,
       timerKey: `${Date.now()}`,
     })
+
+    setImmediate(() => {
+      this.forceUpdate();
+    })
   }
   renderAgenttTextArea(){
     // TODO: Display composition state if possible.
