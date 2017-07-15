@@ -151,7 +151,8 @@ function moveUpCursor(selection, blockMap, queryPosition) {
       return selection;
     }
     [key, line] = blockMap._list.get(lineIndex - 1);
-    offset = line._list.get(-1)[0];
+    const lastEntry = line._list.get(-1);
+    offset = lastEntry ? lastEntry[0] : key;
 
     [currLeft, currTop] = queryPosition(key, offset);
     currLineCount = line.count();
