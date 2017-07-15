@@ -66,7 +66,7 @@ export default class RichCursorLayer extends PureComponent {
   onTextInput = text => {
     // This means user entered something.
     const { dispatch } = this.props;
-    dispatch('add-text', text);
+    dispatch('edit.insertText', text);
   };
   onKeyDown = ev => {
     const parts = [];

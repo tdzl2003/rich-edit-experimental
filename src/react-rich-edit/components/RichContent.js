@@ -39,13 +39,18 @@ export default class RichContent extends PureComponent {
         return [el.offsetLeft, el.offsetTop, el.offsetHeight];
       } else {
         // Empty line.
-        return [blockRef]
+        const el = block.blockRef;
+        return [el.offsetLeft, el.offsetTop, el.offsetHeight];
       }
     } else {
       // after some element.
-      const el = block.entityRefs[offset].entityRef;
-      return [el.offsetLeft + el.offsetWidth, el.offsetTop, el.offsetHeight];
+      const ins = block.entityRefs[offset];
+      if (ins) {
+        const el = ins.entityRef;
+        return [el.offsetLeft + el.offsetWidth, el.offsetTop, el.offsetHeight];
+      }
     }
+    return [0, 0, 0];
   }
   render() {
     const { blockMap } = this.props;

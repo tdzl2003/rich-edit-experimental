@@ -44,12 +44,16 @@ export default class ContentState extends ContentStateRecord {
     return this.get('selectionList');
   }
 
+  getKeyCounter() {
+    return this.get('keyCounter');
+  }
+
   // Actions
+
   modifyAllSelection(reducer) {
     const selectionList = this.getSelectionList();
     return this.set('selectionList', selectionList.map(reducer));
   }
-
 
   // Factories
 
